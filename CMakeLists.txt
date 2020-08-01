@@ -4,7 +4,6 @@ project(mcl_3dl)
 set(CATKIN_DEPENDS
   roscpp
 
-  pcl_ros
   tf2
   tf2_geometry_msgs
   tf2_ros
@@ -27,6 +26,7 @@ find_package(PCL 1.7.2 REQUIRED
     core
     filters
     kdtree
+    io
 )
 find_package(Boost REQUIRED COMPONENTS chrono)
 catkin_package(
@@ -37,7 +37,7 @@ catkin_package(
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${PCL_INCLUDE_DIR})
+include_directories(include ${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 
@@ -78,7 +78,6 @@ add_executable(mcl_3dl
   src/lidar_measurement_model_likelihood.cpp
   src/mcl_3dl.cpp
   src/parameters.cpp
-  src/point_types.cpp
 )
 target_link_libraries(mcl_3dl ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PCL_LIBRARIES})
 add_dependencies(mcl_3dl ${catkin_EXPORTED_TARGETS})
