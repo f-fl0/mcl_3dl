@@ -33,7 +33,7 @@
 #include <memory>
 #include <string>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <mcl_3dl/quat.h>
 #include <mcl_3dl/state_6dof.h>
@@ -44,7 +44,7 @@ namespace mcl_3dl
 class Parameters
 {
 public:
-  bool load(ros::NodeHandle& nh);
+  bool load(const rclcpp::Node& node);
 
   bool fake_imu_, fake_odom_;
   double map_downsample_x_;
@@ -81,7 +81,7 @@ public:
   double odom_err_lin_ang_;
   double odom_err_ang_lin_;
   double odom_err_ang_ang_;
-  std::shared_ptr<ros::Duration> map_update_interval_;
+  std::shared_ptr<rclcpp::Duration> map_update_interval_;
   int num_particles_;
   int skip_measure_;
   int accum_cloud_;
@@ -95,8 +95,8 @@ public:
   double odom_err_integ_lin_sigma_;
   double odom_err_integ_ang_tc_;
   double odom_err_integ_ang_sigma_;
-  std::shared_ptr<ros::Duration> match_output_interval_;
-  std::shared_ptr<ros::Duration> tf_tolerance_;
+  std::shared_ptr<rclcpp::Duration> match_output_interval_;
+  std::shared_ptr<rclcpp::Duration> tf_tolerance_;
   double lpf_step_;
   double acc_lpf_step_;
   std::array<float, 4> dist_weight_;

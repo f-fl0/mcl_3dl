@@ -10,8 +10,8 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the copyright holder nor the names of its 
- *       contributors may be used to endorse or promote products derived from 
+ *     * Neither the name of the copyright holder nor the names of its
+ *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -34,7 +34,7 @@
 #include <cassert>
 #include <vector>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <mcl_3dl/pf.h>
 #include <mcl_3dl/point_types.h>
@@ -49,6 +49,7 @@ namespace mcl_3dl
 class State6DOF : public mcl_3dl::pf::ParticleBase<float>
 {
 public:
+  static constexpr const char* LOGGER_NAME = "mcl_3dl::State6DOF";
   mcl_3dl::Vec3 pos_;
   mcl_3dl::Quat rot_;
   bool diff_;
@@ -201,7 +202,8 @@ public:
   {
     if (gen.getDimension() != 6)
     {
-      ROS_ERROR("Dimension of noise must be 6. Passed: %lu", gen.getDimension());
+      RCLCPP_ERROR(rclcpp::get_logger(LOGGER_NAME),
+        "Dimension of noise must be 6. Passed: %lu", gen.getDimension());
     }
     State6DOF noise;
     const std::vector<float> org_noise = gen(engine);
@@ -254,7 +256,8 @@ inline void NoiseGeneratorBase<float>::setMean(const State6DOF& mean)
   mean_.resize(6);
   if (mean.isDiff())
   {
-    ROS_ERROR("Failed to generate noise. mean must be mcl_3dl::Quat.");
+    RCLCPP_ERROR(rclcpp::get_logger(State6DOF::LOGGER_NAME),
+      "Failed to generate noise. mean must be mcl_3dl::Quat.");
   }
   for (size_t i = 0; i < 3; i++)
   {
@@ -274,7 +277,8 @@ inline void DiagonalNoiseGenerator<float>::setSigma(const State6DOF& sigma)
   sigma_.resize(6);
   if (!sigma.isDiff())
   {
-    ROS_ERROR("Failed to generate noise. sigma must be rpy vec.");
+    RCLCPP_ERROR(rclcpp::get_logger(State6DOF::LOGGER_NAME),
+      "Failed to generate noise. sigma must be rpy vec.");
   }
   for (size_t i = 0; i < 3; i++)
   {
