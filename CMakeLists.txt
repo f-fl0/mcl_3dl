@@ -95,7 +95,7 @@ add_executable(map_loader_node
 target_link_libraries(map_loader_node ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 add_executable(mcl_3dl
-  src/test.cpp
+  src/cloud_accum.cpp
   src/parameters.cpp
 )
 ament_target_dependencies(mcl_3dl

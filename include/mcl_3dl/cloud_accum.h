@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 
-#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 
 namespace mcl_3dl
 {
@@ -46,9 +46,9 @@ public:
 
   virtual void push(
       const std::string& key,
-      const sensor_msgs::PointCloud2::ConstPtr& msg,
+      const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg,
       std::function<void()> process,
-      std::function<bool(const sensor_msgs::PointCloud2::ConstPtr&)> accumulate,
+      std::function<bool(const sensor_msgs::msg::PointCloud2::ConstSharedPtr&)> accumulate,
       std::function<void()> clear) = 0;
 };
 
@@ -57,9 +57,9 @@ class CloudAccumulationLogicPassThrough : public CloudAccumulationLogicBase
 public:
   void push(
       const std::string& key,
-      const sensor_msgs::PointCloud2::ConstPtr& msg,
+      const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg,
       std::function<void()> process,
-      std::function<bool(const sensor_msgs::PointCloud2::ConstPtr&)> accumulate,
+      std::function<bool(const sensor_msgs::msg::PointCloud2::ConstSharedPtr&)> accumulate,
       std::function<void()> clear) final;
 };
 
@@ -77,9 +77,9 @@ public:
 
   void push(
       const std::string& key,
-      const sensor_msgs::PointCloud2::ConstPtr& msg,
+      const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg,
       std::function<void()> process,
-      std::function<bool(const sensor_msgs::PointCloud2::ConstPtr&)> accumulate,
+      std::function<bool(const sensor_msgs::msg::PointCloud2::ConstSharedPtr&)> accumulate,
       std::function<void()> clear) final;
 
 private:
