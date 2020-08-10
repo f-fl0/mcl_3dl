@@ -35,7 +35,7 @@
 #include <ros/ros.h>
 
 #include <pcl/point_types.h>
-#include <pcl_ros/point_cloud.h>
+#include <pcl/point_cloud.h>
 
 #include <mcl_3dl/pf.h>
 #include <mcl_3dl/point_cloud_random_sampler.h>

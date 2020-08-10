@@ -64,9 +64,8 @@
 
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_types.h>
-#include <pcl_ros/point_cloud.h>
-#include <pcl_ros/transforms.h>
 #include <pcl/conversions.h>
+#include <pcl/common/transforms.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/kdtree/kdtree.h>
 #include <pcl/kdtree/kdtree_flann.h>

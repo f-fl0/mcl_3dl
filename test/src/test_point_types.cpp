@@ -29,7 +29,6 @@
 
 #include <gtest/gtest.h>
 
-#include <pcl_ros/point_cloud.h>
 #include <pcl/filters/voxel_grid.h>
 
 #include <pcl18_backports/voxel_grid.h>

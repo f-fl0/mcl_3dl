@@ -36,7 +36,6 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <pcl_ros/point_cloud.h>
 
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/point_cloud_conversion.h>

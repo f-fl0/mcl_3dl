@@ -38,7 +38,6 @@
 #include <ros/ros.h>
 
 #include <pcl/point_types.h>
-#include <pcl_ros/point_cloud.h>
 
 #include <mcl_3dl/chunked_kdtree.h>
 #include <mcl_3dl/point_types.h>
