@@ -10,8 +10,8 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the copyright holder nor the names of its 
- *       contributors may be used to endorse or promote products derived from 
+ *     * Neither the name of the copyright holder nor the names of its
+ *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDEDNode BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
@@ -56,36 +56,36 @@ LidarMeasurementModelBeam::LidarMeasurementModelBeam(
 }
 
 void LidarMeasurementModelBeam::loadConfig(
-    const ros::NodeHandle& nh,
+    const rclcpp::Node::SharedPtr& node_ptr,
     const std::string& name)
 {
-  ros::NodeHandle pnh(nh, name);
+  rclcpp::Node::SharedPtr sub_node = node_ptr->create_sub_node(name);
 
   int num_points, num_points_global;
-  pnh.param("num_points", num_points, 3);
-  pnh.param("num_points_global", num_points_global, 0);
+  sub_node->get_parameter_or("num_points", num_points, 3);
+  sub_node->get_parameter_or("num_points_global", num_points_global, 0);
   num_points_default_ = num_points_ = num_points;
   num_points_global_ = num_points_global;
 
   double clip_near, clip_far;
-  pnh.param("clip_near", clip_near, 0.5);
-  pnh.param("clip_far", clip_far, 4.0);
+  sub_node->get_parameter_or("clip_near", clip_near, 0.5);
+  sub_node->get_parameter_or("clip_far", clip_far, 4.0);
   clip_near_sq_ = clip_near * clip_near;
   clip_far_sq_ = clip_far * clip_far;
 
   double clip_z_min, clip_z_max;
-  pnh.param("clip_z_min", clip_z_min, -2.0);
-  pnh.param("clip_z_max", clip_z_max, 2.0);
+  sub_node->get_parameter_or("clip_z_min", clip_z_min, -2.0);
+  sub_node->get_parameter_or("clip_z_max", clip_z_max, 2.0);
   clip_z_min_ = clip_z_min;
   clip_z_max_ = clip_z_max;
 
   double beam_likelihood_min;
-  pnh.param("beam_likelihood", beam_likelihood_min, 0.2);
+  sub_node->get_parameter_or("beam_likelihood", beam_likelihood_min, 0.2);
   beam_likelihood_min_ = beam_likelihood_min;
   beam_likelihood_ = std::pow(beam_likelihood_min, 1.0 / static_cast<float>(num_points));
 
   double ang_total_ref;
-  pnh.param("ang_total_ref", ang_total_ref, M_PI / 6.0);
+  sub_node->get_parameter_or("ang_total_ref", ang_total_ref, M_PI / 6.0);
   sin_total_ref_ = sinf(ang_total_ref);
 }
 
