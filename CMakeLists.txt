@@ -72,6 +72,11 @@ endif()
 add_definitions(-DPCL_NO_PRECOMPILE)
 
 
+add_executable(map_loader
+  src/map_loader.cpp
+)
+target_link_libraries(map_loader ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
 add_executable(mcl_3dl
   src/cloud_accum.cpp
   src/lidar_measurement_model_beam.cpp
