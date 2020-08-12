@@ -25,6 +25,7 @@ find_package(PCL 1.7.2 REQUIRED
 find_package(geometry_msgs REQUIRED)
 find_package(mcl_3dl_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(pcl_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -32,7 +33,6 @@ find_package(std_srvs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
 set(dependencies
-  rclcpp
 
 #  tf2
 #  tf2_geometry_msgs
@@ -43,6 +43,8 @@ set(dependencies
   geometry_msgs
   mcl_3dl_msgs
   nav_msgs
+  pcl_msgs
+  rclcpp
   sensor_msgs
   std_msgs
   std_srvs
@@ -87,8 +89,8 @@ add_executable(map_loader_node
   src/map_loader.cpp
   src/map_loader_node.cpp
 )
-
 ament_target_dependencies(map_loader_node
+  pcl_msgs
   rclcpp
   sensor_msgs
 )
@@ -106,10 +108,11 @@ add_executable(mcl_3dl
   src/dummy.cpp
 )
 ament_target_dependencies(mcl_3dl
-  rclcpp
   geometry_msgs
   mcl_3dl_msgs
   nav_msgs
+  pcl_msgs
+  rclcpp
   sensor_msgs
   std_msgs
   std_srvs
