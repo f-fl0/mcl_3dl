@@ -41,7 +41,7 @@ namespace mcl_3dl
 const static rclcpp::Logger logger = rclcpp::get_logger("cloud_accum");
 
 void CloudAccumulationLogicPassThrough::push(
-    const std::string& key,
+    const std::string& /* key */,
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg,
     std::function<void()> process,
     std::function<bool(const sensor_msgs::msg::PointCloud2::ConstSharedPtr&)> accumulate,
