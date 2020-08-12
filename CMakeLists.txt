@@ -51,11 +51,6 @@ set(dependencies
 
 include_directories(
   include
-  ${PCL_COMMON_INCLUDE_DIRS}
-)
-
-include_directories(
-  include
   ${EIGEN3_INCLUDE_DIR}
   ${PCL_INCLUDE_DIRS}
 )
@@ -92,11 +87,23 @@ add_executable(map_loader_node
   src/map_loader.cpp
   src/map_loader_node.cpp
 )
-target_link_libraries(map_loader_node ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+ament_target_dependencies(map_loader_node
+  rclcpp
+  sensor_msgs
+)
+target_link_libraries(map_loader_node
+  ${PCL_LIBRARIES}
+)
 
 add_executable(mcl_3dl
   src/cloud_accum.cpp
+  src/lidar_measurement_model_beam.cpp
+  src/lidar_measurement_model_likelihood.cpp
   src/parameters.cpp
+
+  # to avoid the undefined reference to 'main' error for now
+  src/dummy.cpp
 )
 ament_target_dependencies(mcl_3dl
   rclcpp
@@ -107,6 +114,10 @@ ament_target_dependencies(mcl_3dl
   std_msgs
   std_srvs
   visualization_msgs
+)
+
+target_link_libraries(mcl_3dl
+  ${PCL_LIBRARIES}
 )
 
 if(BUILD_TESTING)

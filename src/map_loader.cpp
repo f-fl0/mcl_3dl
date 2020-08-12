@@ -29,44 +29,73 @@
 
 #include <string>
 
-#include <sensor_msgs/PointCloud2.h>
+#include <rclcpp/rclcpp.hpp>
+
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl/io/pcd_io.h>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 
 #include <mcl_3dl/map_loader.h>
 
 namespace mcl_3dl
 {
-MapLoader::MapLoader()
-  : pnh_("~")
+class MapLoader : public rclcpp::Node
 {
-  pnh_.param<std::string>("frame_id", frame_id_, std::string("map"));
-  pub_mapcloud_ = nh_.advertise<sensor_msgs::PointCloud2>("mapcloud", 1, true);
-}
-
-bool MapLoader::init()
-{
-  std::string map_file;
-  if (pnh_.hasParam("map_file"))
+public:
+  MapLoader()
+    : Node("map_loader")
   {
-    pnh_.getParam("map_file", map_file);
+    this->get_parameter_or("frame_id", frame_id_, std::string("map"));
+    pub_mapcloud_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
+        "mapcloud",
+        // Transient local is similar to latching in ROS 1.
+        rclcpp::QoS(1).transient_local());
+  }
 
-    pcl::PCLPointCloud2 map_cloud;
-    if (map_file.empty() || reader_.read(map_file, map_cloud) < 0)
+  bool init()
+  {
+    std::string map_file;
+    if (!this->get_parameter("map_file", map_file))
     {
-      ROS_ERROR("Could not load the map file: %s", map_file.c_str());
-      return false;
+      pcl::PCLPointCloud2 map_cloud;
+      if (map_file.empty() || reader_.read(map_file, map_cloud) < 0)
+      {
+        RCLCPP_ERROR(this->get_logger(),
+                     "Could not load the map file: %s", map_file.c_str());
+        return false;
+      }
+      // TODO(f-fl0) how to do that without pcl_conversion?
+      // sensor_msgs::msg::PointCloud2 map_cloud_msg;
+      // pcl_conversions::moveFromPCL(map_cloud, map_cloud_msg);
+      // map_cloud_msg.header.stamp = ros::Time::now();
+      // map_cloud_msg.header.frame_id = frame_id_;
+      // pub_mapcloud_.publish(map_cloud_msg);
+      return true;
     }
-    sensor_msgs::PointCloud2 map_cloud_msg;
-    pcl_conversions::moveFromPCL(map_cloud, map_cloud_msg);
-    map_cloud_msg.header.stamp = ros::Time::now();
-    map_cloud_msg.header.frame_id = frame_id_;
-    pub_mapcloud_.publish(map_cloud_msg);
-    return true;
+    else
+    {
+      RCLCPP_ERROR(this->get_logger(), "No map_file parameter.");
+    }
+
+    return false;
   }
-  else
-  {
-    ROS_ERROR("Could not find map_file in parameter server");
-  }
-  return false;
+
+private:
+  pcl::PCDReader reader_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_mapcloud_;
+  std::string frame_id_;
+};
+
+}  // namespace mcl_3dl
+
+int main(int argc, char* argv[])
+{
+  rclcpp::init(argc, argv);
+  auto map_loader = std::make_shared<mcl_3dl::MapLoader>();
+  if (!map_loader->init())
+    return 1;
+  rclcpp::spin(map_loader);
+  rclcpp::shutdown();
+  return 0;
 }
 }  // namespace mcl_3dl
