@@ -34,6 +34,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/io/pcd_io.h>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <pcl_conversions/pcl_conversions.h>
 
 #include <mcl_3dl/map_loader.h>
 
@@ -64,12 +65,11 @@ public:
                      "Could not load the map file: %s", map_file.c_str());
         return false;
       }
-      // TODO(f-fl0) how to do that without pcl_conversion?
-      // sensor_msgs::msg::PointCloud2 map_cloud_msg;
-      // pcl_conversions::moveFromPCL(map_cloud, map_cloud_msg);
-      // map_cloud_msg.header.stamp = ros::Time::now();
-      // map_cloud_msg.header.frame_id = frame_id_;
-      // pub_mapcloud_.publish(map_cloud_msg);
+      sensor_msgs::msg::PointCloud2 map_cloud_msg;
+      pcl_conversions::moveFromPCL(map_cloud, map_cloud_msg);
+      map_cloud_msg.header.stamp = this->now();
+      map_cloud_msg.header.frame_id = frame_id_;
+      pub_mapcloud_->publish(map_cloud_msg);
       return true;
     }
     else
