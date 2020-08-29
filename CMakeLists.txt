@@ -72,10 +72,11 @@ endif()
 add_definitions(-DPCL_NO_PRECOMPILE)
 
 
-add_executable(map_loader
+add_executable(map_loader_node
   src/map_loader.cpp
+  src/map_loader_node.cpp
 )
-target_link_libraries(map_loader ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(map_loader_node ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 add_executable(mcl_3dl
   src/cloud_accum.cpp

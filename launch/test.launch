@@ -49,7 +49,7 @@
     <param name="scale" value="$(arg map_scale)" />
     <remap from="~/cloud" to="mapcloud" />
   </node>
-  <node pkg="mcl_3dl" type="map_loader" name="map_loader" if="$(arg use_pointcloud_map)">
+  <node pkg="mcl_3dl" type="map_loader_node" name="map_loader" if="$(arg use_pointcloud_map)">
     <param name="map_file" value="$(arg use_pointcloud_map)" />
   </node>
 

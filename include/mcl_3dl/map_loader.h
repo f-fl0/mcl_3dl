@@ -27,46 +27,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <string>
+#ifndef MCL_3DL_MAP_LOADER_H
+#define MCL_3DL_MAP_LOADER_H
 
-#include <sensor_msgs/PointCloud2.h>
-#include <pcl_conversions/pcl_conversions.h>
+#include <ros/ros.h>
 
-#include <mcl_3dl/map_loader.h>
+#include <pcl/io/pcd_io.h>
 
 namespace mcl_3dl
 {
-MapLoader::MapLoader()
-  : pnh_("~")
+class MapLoader
 {
-  pnh_.param<std::string>("frame_id", frame_id_, std::string("map"));
-  pub_mapcloud_ = nh_.advertise<sensor_msgs::PointCloud2>("mapcloud", 1, true);
-}
+public:
+  MapLoader();
+  bool init();
 
-bool MapLoader::init()
-{
-  std::string map_file;
-  if (pnh_.hasParam("map_file"))
-  {
-    pnh_.getParam("map_file", map_file);
+private:
+  ros::NodeHandle nh_;
+  ros::NodeHandle pnh_;
 
-    pcl::PCLPointCloud2 map_cloud;
-    if (map_file.empty() || reader_.read(map_file, map_cloud) < 0)
-    {
-      ROS_ERROR("Could not load the map file: %s", map_file.c_str());
-      return false;
-    }
-    sensor_msgs::PointCloud2 map_cloud_msg;
-    pcl_conversions::moveFromPCL(map_cloud, map_cloud_msg);
-    map_cloud_msg.header.stamp = ros::Time::now();
-    map_cloud_msg.header.frame_id = frame_id_;
-    pub_mapcloud_.publish(map_cloud_msg);
-    return true;
-  }
-  else
-  {
-    ROS_ERROR("Could not find map_file in parameter server");
-  }
-  return false;
-}
+  pcl::PCDReader reader_;
+  ros::Publisher pub_mapcloud_;
+  std::string frame_id_;
+};
+
 }  // namespace mcl_3dl
+
+#endif  // MCL_3DL_MAP_LOADER_H
