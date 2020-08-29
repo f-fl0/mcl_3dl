@@ -59,12 +59,16 @@ add_rostest_gtest(test_transform_failure tests/transform_rostest.test
 target_link_libraries(test_transform_failure ${catkin_LIBRARIES})
 add_dependencies(test_transform_failure mcl_3dl)
 
+add_rostest_gtest(test_map_loader tests/map_loader_rostest.test
+    src/test_map_loader.cpp ../src/map_loader.cpp)
+target_link_libraries(test_map_loader ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
 if(MCL_3DL_EXTRA_TESTS)
 
   catkin_download_test_data(
       ${PROJECT_NAME}_short_test3.bag
       https://openspur.org/~atsushi.w/dataset/mcl_3dl/short_test3.bag
-      MD5 7f0f4a2c2c4d569c81cb972d7dc30ca0 
+      MD5 7f0f4a2c2c4d569c81cb972d7dc30ca0
       FILENAME test/short_test3.bag)
 
   catkin_download_test_data(
@@ -81,7 +85,7 @@ if(MCL_3DL_EXTRA_TESTS)
   add_executable(compare_pose
       src/compare_pose.cpp)
   target_link_libraries(compare_pose ${catkin_LIBRARIES} ${GTEST_LIBRARIES})
-  add_dependencies(compare_pose 
+  add_dependencies(compare_pose
         ${PROJECT_NAME}_short_test3.bag
         ${PROJECT_NAME}_short_test_ref.topic
         mcl_3dl)
@@ -103,7 +107,7 @@ if(MCL_3DL_EXTRA_TESTS)
   add_rostest_gtest(compare_tf ${PROJECT_BINARY_DIR}/test/tests/tf_rostest.test
       src/compare_tf.cpp)
   target_link_libraries(compare_tf ${catkin_LIBRARIES})
-  add_dependencies(compare_tf 
+  add_dependencies(compare_tf
         ${PROJECT_NAME}_short_test3.bag
         ${PROJECT_NAME}_short_test_ref.topic
         mcl_3dl

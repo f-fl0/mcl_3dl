@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+  <env name="GCOV_PREFIX" value="/tmp/gcov/map_loader" />
+
+  <test test-name="test_map_loader" pkg="mcl_3dl" type="test_map_loader" />
+</launch>
