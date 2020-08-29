@@ -42,7 +42,7 @@ class MapLoader
 public:
   MapLoader()
   {
-    pnh_.param<std::string>("frame_id", frame_id_, "map");
+    pnh_.param<std::string>("frame_id", frame_id_, std::string("map"));
     pub_mapcloud_ = nh_.advertise<sensor_msgs::PointCloud2>("mapcloud", 1, true);
   }
 
@@ -65,6 +65,10 @@ public:
       map_cloud_msg.header.frame_id = frame_id_;
       pub_mapcloud_.publish(map_cloud_msg);
       return true;
+    }
+    else
+    {
+      ROS_ERROR("Could not map_file in parameter server");
     }
     return false;
   }
