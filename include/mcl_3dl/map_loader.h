@@ -30,6 +30,8 @@
 #ifndef MCL_3DL_MAP_LOADER_H
 #define MCL_3DL_MAP_LOADER_H
 
+#include <string>
+
 #include <ros/ros.h>
 
 #include <pcl/io/pcd_io.h>
