@@ -27,20 +27,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <mcl_3dl/map_loader.h>
 
 int main(int argc, char* argv[])
 {
-  ros::init(argc, argv, "map_loader");
-
-  mcl_3dl::MapLoader map_loader;
-  if (!map_loader.init())
-  {
+  rclcpp::init(argc, argv);
+  auto map_loader = std::make_shared<mcl_3dl::MapLoader>();
+  if (!map_loader->init())
     return 1;
-  }
-  ros::spin();
-
+  rclcpp::spin(map_loader);
+  rclcpp::shutdown();
   return 0;
 }

@@ -32,24 +32,22 @@
 
 #include <string>
 
-#include <ros/ros.h>
-
 #include <pcl/io/pcd_io.h>
+
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 
 namespace mcl_3dl
 {
-class MapLoader
+class MapLoader : public rclcpp::Node
 {
 public:
   MapLoader();
   bool init();
 
 private:
-  ros::NodeHandle nh_;
-  ros::NodeHandle pnh_;
-
   pcl::PCDReader reader_;
-  ros::Publisher pub_mapcloud_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_mapcloud_;
   std::string frame_id_;
 };
 
