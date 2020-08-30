@@ -22,6 +22,7 @@ find_package(PCL 1.7.2 REQUIRED
     io
 )
 
+find_package(diagnostic_updater REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(mcl_3dl_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
@@ -31,16 +32,14 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_sensor_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
 set(dependencies
-
-#  tf2
-#  tf2_geometry_msgs
-#  tf2_ros
-#  tf2_sensor_msgs
-
-#  diagnostic_updater
+  diagnostic_updater
   geometry_msgs
   mcl_3dl_msgs
   nav_msgs
@@ -50,6 +49,10 @@ set(dependencies
   sensor_msgs
   std_msgs
   std_srvs
+  tf2
+  tf2_geometry_msgs
+  tf2_ros
+  tf2_sensor_msgs
   visualization_msgs
 )
 
@@ -105,11 +108,10 @@ add_executable(mcl_3dl
   src/lidar_measurement_model_beam.cpp
   src/lidar_measurement_model_likelihood.cpp
   src/parameters.cpp
-
-  # to avoid the undefined reference to 'main' error for now
-  src/dummy.cpp
+  src/mcl_3dl.cpp
 )
 ament_target_dependencies(mcl_3dl
+  diagnostic_updater
   geometry_msgs
   mcl_3dl_msgs
   nav_msgs
@@ -119,6 +121,10 @@ ament_target_dependencies(mcl_3dl
   sensor_msgs
   std_msgs
   std_srvs
+  tf2
+  tf2_geometry_msgs
+  tf2_ros
+  tf2_sensor_msgs
   visualization_msgs
 )
 target_link_libraries(mcl_3dl

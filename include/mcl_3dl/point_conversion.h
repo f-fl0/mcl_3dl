@@ -30,29 +30,30 @@
 #ifndef MCL_3DL_POINT_CONVERSION_H
 #define MCL_3DL_POINT_CONVERSION_H
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <mcl_3dl/point_types.h>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
-#include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/point_cloud_conversion.h>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/point_cloud_conversion.hpp>
 
 namespace mcl_3dl
 {
 namespace
 {
+const static rclcpp::Logger logger = rclcpp::get_logger("point_conversion");
 template <typename PointTIn, typename PointTOut>
 bool fromROSMsgImpl(
-    const sensor_msgs::PointCloud2& msg, pcl::PointCloud<PointTOut>& pc)
+    const sensor_msgs::msg::PointCloud2& msg, pcl::PointCloud<PointTOut>& pc)
 {
   typename pcl::PointCloud<PointTIn>::Ptr raw(new typename pcl::PointCloud<PointTIn>);
   pcl::fromROSMsg(msg, *raw);
   if (raw->points.size() == 0)
   {
-    ROS_ERROR("Given PointCloud2 is empty");
+    RCLCPP_ERROR(logger, "Given PointCloud2 is empty");
     return false;
   }
   pcl::copyPointCloud(*raw, pc);
@@ -62,16 +63,16 @@ bool fromROSMsgImpl(
 
 template <typename PointT>
 bool fromROSMsg(
-    const sensor_msgs::PointCloud2& msg, pcl::PointCloud<PointT>& pc)
+    const sensor_msgs::msg::PointCloud2& msg, pcl::PointCloud<PointT>& pc)
 {
-  const int x_idx = getPointCloud2FieldIndex(msg, "x");
-  const int y_idx = getPointCloud2FieldIndex(msg, "y");
-  const int z_idx = getPointCloud2FieldIndex(msg, "z");
-  const int intensity_idx = getPointCloud2FieldIndex(msg, "intensity");
+  const int x_idx = sensor_msgs::getPointCloud2FieldIndex(msg, "x");
+  const int y_idx = sensor_msgs::getPointCloud2FieldIndex(msg, "y");
+  const int z_idx = sensor_msgs::getPointCloud2FieldIndex(msg, "z");
+  const int intensity_idx = sensor_msgs::getPointCloud2FieldIndex(msg, "intensity");
 
   if (x_idx == -1 || y_idx == -1 || z_idx == -1)
   {
-    ROS_ERROR("Given PointCloud2 doesn't have x, y, z fields");
+    RCLCPP_ERROR(logger, "Given PointCloud2 doesn't have x, y, z fields");
     return false;
   }
   if (intensity_idx != -1)

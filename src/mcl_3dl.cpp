@@ -42,20 +42,21 @@
 #include <boost/chrono.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
-#include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/point_cloud_conversion.h>
-#include <nav_msgs/Odometry.h>
-#include <sensor_msgs/Imu.h>
-#include <geometry_msgs/PoseArray.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
-#include <geometry_msgs/TransformStamped.h>
-#include <visualization_msgs/MarkerArray.h>
-#include <mcl_3dl_msgs/ResizeParticle.h>
-#include <mcl_3dl_msgs/Status.h>
-#include <std_srvs/Trigger.h>
-#include <diagnostic_updater/diagnostic_updater.h>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/point_cloud_conversion.hpp>
+
+#include <nav_msgs/msg/odometry.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <geometry_msgs/msg/pose_array.hpp>
+#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
+#include <geometry_msgs/msg/transform_stamped.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
+#include <mcl_3dl_msgs/srv/resize_particle.hpp>
+#include <mcl_3dl_msgs/msg/status.hpp>
+#include <std_srvs/srv/trigger.hpp>
+#include <diagnostic_updater/diagnostic_updater.hpp>
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_broadcaster.h>
@@ -94,8 +95,47 @@
 #include <mcl_3dl/vec3.h>
 #include <mcl_3dl/noise_generators/multivariate_noise_generator.h>
 
-#include <mcl_3dl_compat/compatibility.h>
+// #include <mcl_3dl_compat/compatibility.h>
 
+namespace mcl_3dl
+{
+class MCL3dlNode : public rclcpp::Node
+{
+protected:
+  using PointType = mcl_3dl::PointXYZIL;
+  std::shared_ptr<pf::ParticleFilter<State6DOF, float, ParticleWeightedMeanQuat, std::default_random_engine>> pf_;
+
+  class MyPointRepresentation : public pcl::PointRepresentation<PointType>
+  {
+    using pcl::PointRepresentation<PointType>::nr_dimensions_;
+
+  public:
+    MyPointRepresentation()
+    {
+      nr_dimensions_ = 3;
+    }
+
+    virtual void copyToFloatArray(const PointType& p, float* out) const
+    {
+      out[0] = p.x;
+      out[1] = p.y;
+      out[2] = p.z;
+    }
+  };
+public:
+  MCL3dlNode()
+    : rclcpp::Node("mcl_3dl")
+  {
+  }
+  bool configure()
+  {
+    return true;
+  }
+};
+
+}  // namespace mcl_3dl
+
+#ifdef READY
 namespace mcl_3dl
 {
 class MCL3dlNode
@@ -1383,5 +1423,17 @@ int main(int argc, char* argv[])
   }
   ros::spin();
 
+  return 0;
+}
+#endif
+
+int main(int argc, char* argv[])
+{
+  rclcpp::init(argc, argv);
+  auto mcl = std::make_shared<mcl_3dl::MCL3dlNode>();
+  if (!mcl->configure())
+    return 1;
+  rclcpp::spin(mcl);
+  rclcpp::shutdown();
   return 0;
 }
